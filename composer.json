@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Magyar Nemzeti Bank arfolyam lekerdezés (PHP & SOAP)",
     "require": {
+        "meng-tian/php-soap-interpreter": "*"
     },
     "require-dev": {
     },
