@@ -1,0 +1,14 @@
+{
+    "name": "daveferger/mnb-exchange-rates",
+    "version": "1.0.0"
+    "description": "Magyar Nemzeti Bank arfolyam lekerdezés (PHP & SOAP)",
+    "require": {
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "daveferger\\MNBExchangeRates\\": "src/",
+        }
+    }
+}
