@@ -13,12 +13,14 @@ class ExchangeRates
     {
         $this->setCurrencies($currencies);
 
-        if($start_date === null)
+        if ($start_date === null) {
             $start_date = date('Y-m-d');
+        }
         $this->setStartDate($start_date);
 
-        if($end_date=== null)
+        if ($end_date === null) {
             $end_date = date('Y-m-d');
+        }
         $this->setEndDate($end_date);
     }
 
@@ -85,21 +87,29 @@ class ExchangeRates
     function getResults()
     {
 
+        $results = [];
         $client = new \SoapClient("http://www.mnb.hu/arfolyamok.asmx?wsdl");
-        $response = $client->__soapCall("GetCurrentExchangeRates", []);
+        $response = $client->__soapCall("GetExchangeRates", ['Rate' => 'EUR']);
 
         $doc = new \DOMDocument;
         $doc->loadXML($response->GetCurrentExchangeRatesResult);
         $xpath = new \DOMXPath($doc);
 
-        $query = '//MNBCurrentExchangeRates/Day/Rate[@curr=\'' . implode("'|'", $this->getCurrencies()) . '\']';
-        $entries = $xpath->query($query);
+        $query = '//MNBCurrentExchangeRates/Day';
+        $days = $xpath->query($query);
 
-        if ($entries->length) {
-            return $currency . ": " . $entries->item(0)->nodeValue;
-        } else {
-            return "Nem tölthető be az árfolyam.";
+
+        if (!$days->length) {
+            return null;
         }
+
+        foreach ($days as $day) {
+            foreach ($day->childNodes as $rate) {
+                $results[$day->getAttribute('date')][$rate->getAttribute('curr')] = $rate->nodeValue;
+            }
+        }
+
+        return $results;
     }
 }
 
